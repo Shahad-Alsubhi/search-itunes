@@ -1,30 +1,43 @@
-import type { resultItem } from "../useHandleClick";
+import type { MediaItem } from "../types";
+import MenuIcon from "./MenuIcon";
 
-function Card({ item }: { item: resultItem }) {
+function Card({ item, type }: { item: MediaItem; type: "podcast" | "movie" }) {
+  const { artistName, artistViewUrl, artworkUrl100, collectionName } = item;
+
   return (
-    <div className="bg-[#15263F] h-[413px] flex flex-col p-4 rounded-lg shadow-lg w-[240px]">
+    <div
+      className={`h-[233px] flex flex-col rounded-lg w-[188px] ${
+        type === "movie" &&
+        "grid grid-cols-[65px_1fr] w-full h-fit! border-b py-1.5 p-1 rounded-b-none border-[#23222a] hover:rounded-none hover:bg-black"
+      }`}
+    >
       <img
-        width={300}
-        height={300}
-        className="rounded-lg overflow-hidden bg-neutral-300 w-[200px] h-[200px]"
-        src={item.artworkUrl100.replace(/\d+x\d+bb/, "200x200bb")}
+        className={`rounded-sm overflow-hidden bg-neutral-300 w-[188px] h-[188px] ${
+          type === "movie" && "w-[50px]! h-[50px]! "
+        }`}
+        src={artworkUrl100.replace(/\d+x\d+bb/, "200x200bb")}
         alt="artwork image"
       />
-      <h2 className="text-xl font-bold mt-4 line-clamp-1 ">
-        {item.artistName}
-      </h2>
-      <p className="text-[#8BACD9] text-lg my-2 line-clamp-2">
-        {item.collectionName}
-      </p>
-      <div className="mt-auto ">
-        <h3 className="text-base text-[#00FFF8] line-clamp-1">{item.kind}</h3>
-        <hr className="my-2 text-[#2E405A]" />
-        <button  disabled={!item.artistViewUrl}
-          className="cursor-pointer flex mx-auto justify-center disabled:text-neutral-400"
-          onClick={()=>window.open(item.artistViewUrl, "_blank")}
-        >
-          Visit now!
-        </button>
+
+      <div
+        className={`w-[188px] text-[#46454b] flex flex-row justify-between items-center ${
+          type === "movie" && "w-full"
+        }`}
+      >
+        <div>
+          <h2
+            onClick={() =>
+              window.open(artistViewUrl || "https://music.apple.com/", "_blank")
+            }
+            className=" cursor-pointer text-sm hover:underline text-white font-semibold mt-2 line-clamp-1 "
+          >
+            {artistName}
+          </h2>
+          <p className="text-[#8BACD9] text-xs my-1 line-clamp-1">
+            {collectionName || "Collection Name Not Available"}
+          </p>
+        </div>
+        <MenuIcon />
       </div>
     </div>
   );
