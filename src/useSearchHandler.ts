@@ -1,10 +1,11 @@
 import { useState } from "react";
+import type { MediaItem } from "./types";
 
-const useHandleClick = () => {
+const useSearchHandler = () => {
   const [message, setMessage] = useState("");
-  const [data, setData] = useState<resultItem[]>([]);
+  const [data, setData] = useState<{podcastResult:MediaItem[],movieResult:MediaItem[]}>({podcastResult:[],movieResult:[]});
 
-  const handleClick = async (searchTerm: string) => {
+  const handleSearch = async (searchTerm: string) => {
     if (!searchTerm) {
       setMessage("Please enter a search term!");
       return;
@@ -17,11 +18,13 @@ const useHandleClick = () => {
       if (!res.ok) {
         setMessage("Something went wrong!");
       } else {
-        const { data } = await res.json();
-        setData(data.results);
-        console.log(data.results);
+        const  data  = await res.json();
+        setData({
+          podcastResult: data.podcastResult.results,
+          movieResult: data.movieResult.results
+        });
 
-        if (data.results.length === 0) {
+        if (data.podcastResult.length === 0) {
           setMessage("No results found!");
         } else {
           setMessage("");
@@ -32,15 +35,8 @@ const useHandleClick = () => {
       setMessage("Something went wrong!");
     }
   };
-  return { handleClick, message, data, setData };
+  return { handleSearch, message, data, setData };
 };
-export default useHandleClick;
+export default useSearchHandler;
 
-export interface resultItem {
-  artistName: string;
-  collectionName: string;
-  artworkUrl100: string;
-  artistViewUrl: string;
-  kind: string;
-  artistId: string;
-}
+
